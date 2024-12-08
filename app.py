@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, send_file, jsonify
 from flask_cors import CORS
 from pdf2pptx import convert_pdf2pptx
 from dotenv import load_dotenv
@@ -6,9 +6,9 @@ import tempfile
 import os
 
 app = Flask(__name__)
-CORS(app) #Adding CORS to all routes
+CORS(app)  # Adding CORS to all routes
 
-load_dotenv() #load environment variables
+load_dotenv()  # Load environment variables
 
 @app.route('/convert-powerpoint', methods=['POST'])
 def convert_pdf_to_pptx():
@@ -38,8 +38,8 @@ def convert_pdf_to_pptx():
 
         convert_pdf2pptx(temp_pdf_name, pptx_path, resolution, start_page, page_count)
 
-    # Return the path to the converted file
-    return jsonify({'message': 'Conversion successful', 'pptx_file': pptx_path}), 200
+    # Send the converted PPTX file back to the client
+    return send_file(pptx_path, as_attachment=True)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
